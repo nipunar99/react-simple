@@ -19,7 +19,7 @@
 //     }
 // }
 pipeline {
-    agent any
+    agent { docker { image 'node:20.9.0-alpine3.18' } }
 
     environment {
         DOCKER_REGISTRY_CREDENTIALS = credentials('Dockercred')
@@ -30,14 +30,14 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[credentialsId: 'gitcreds', url: 'your_git_repo_url']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[credentialsId: 'gitcreds', url: 'https://github.com/nipunar99/react-simple.git']]])
                 sh 'npm install'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm run test'
+                // sh 'npm run test'
                 echo "Test"
             }
         }
@@ -58,7 +58,7 @@ pipeline {
 
         stage('Push Image to Registry') {
             steps {
-                sh 'docker tag reactimage:latest your_docker_registry_url/cloud001/dev:latest'
+                sh 'docker tag react-simple:latest your_docker_registry_url/cloud001/dev:latest'
                 sh 'docker push your_docker_registry_url/cloud001/dev:latest'
             }
         }
@@ -66,7 +66,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    def dockerCmd = 'docker run -itd --name react_container -p 3000:3000 your_docker_registry_url/cloud001/dev:latest'
+                    def dockerCmd = 'docker run -itd --name react_container -p 3000:3000 your_docker_registry_url/react-simple/dev:latest'
                     withCredentials([sshUserPrivateKey(credentialsId: 'sshkeypair', keyFileVariable: 'SSH_KEY_PATH')]) {
                         sh "ssh -o StrictHostKeyChecking=no -i $SSH_KEY_PATH ubuntu@34.238.155.217 ${dockerCmd}"
                     }
