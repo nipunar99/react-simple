@@ -24,7 +24,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY_CREDENTIALS = credentials('Dockercred')
         GIT_CREDENTIALS = credentials('gitcreds')
-        SSH_KEY = credentials('sshkeypair')
+        // SSH_KEY = credentials('sshkeypair')
     }
 
     stages {
@@ -63,15 +63,15 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                script {
-                    def dockerCmd = 'docker run -itd --name react_container -p 3000:3000 rnip052899/react-simple:latest'
-                    withCredentials([sshUserPrivateKey(credentialsId: 'sshkeypair', keyFileVariable: 'SSH_KEY_PATH')]) {
-                        sh "ssh -o StrictHostKeyChecking=no -i $SSH_KEY_PATH user@172.20.58.16 ${dockerCmd}"
-                    }
-                }
-            }
-        }
+        // stage('Deploy') {
+        //     steps {
+        //         script {
+        //             def dockerCmd = 'docker run -itd --name react_container -p 3000:3000 rnip052899/react-simple:latest'
+        //             withCredentials([sshUserPrivateKey(credentialsId: 'sshkeypair', keyFileVariable: 'SSH_KEY_PATH')]) {
+        //                 sh "ssh -o StrictHostKeyChecking=no -i $SSH_KEY_PATH user@172.20.58.16 ${dockerCmd}"
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
