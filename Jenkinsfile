@@ -21,10 +21,6 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'NodeJs' // Assuming 'nodejs' is the Node.js tool name configured in Jenkins
-    }
-
     environment {
         DOCKER_REGISTRY_CREDENTIALS = credentials('Dockercred')
         GIT_CREDENTIALS = credentials('gitcreds')
