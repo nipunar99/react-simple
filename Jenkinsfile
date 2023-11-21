@@ -58,7 +58,7 @@ pipeline {
 
         stage('Push Image to Registry') {
             steps {
-                sh 'docker tag react-simple:latest your_docker_registry_url/cloud001/dev:latest'
+                sh 'docker tag react-simple:latest rnip052899/react-simple:latest'
                 sh 'docker push your_docker_registry_url/cloud001/dev:latest'
             }
         }
@@ -66,7 +66,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    def dockerCmd = 'docker run -itd --name react_container -p 3000:3000 your_docker_registry_url/react-simple/dev:latest'
+                    def dockerCmd = 'docker run -itd --name react_container -p 3000:3000 rnip052899/react-simple:latest'
                     withCredentials([sshUserPrivateKey(credentialsId: 'sshkeypair', keyFileVariable: 'SSH_KEY_PATH')]) {
                         sh "ssh -o StrictHostKeyChecking=no -i $SSH_KEY_PATH ubuntu@34.238.155.217 ${dockerCmd}"
                     }
